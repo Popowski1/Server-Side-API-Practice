@@ -2,3 +2,17 @@ body{
     flex: auto;
     flex-wrap: wrap;
 }
+.card {
+	margin: 10px;
+}
+.histBtn {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.icons {
+	height: 70px;
+	width: 70px;
+}
+.cardTodayDate {
+	font-size: 20px;
+}

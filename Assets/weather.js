@@ -1,8 +1,8 @@
-var key = '87c665b742be795e11aff3f1eb9bf566';
-var city = "Minneapolis";
+var key = '67c7ce236adf1f23df2005bdcd06a10f';
+var city = "Minneapolis"
 var date = moment().format('dddd, MMMM Do YYYY');
 var dateTime = moment().format('YYYY-MM-DD HH:MM:SS');
-var cityHistory =[];
+var cityHistory = [];
 
 $('.search').on("click", function (event) {
     event.preventDefault();
@@ -14,7 +14,8 @@ $('.search').on("click", function (event) {
     localStorage.setItem('city', JSON.stringify(cityHistory));
 	fiveForecastEl.empty();
 	getHistory();
-	getWeatherToday();
+	getWeatherToday(city);
+	//getFiveday(city);
 });
 
 var contHistEl = $('.cityHist');
@@ -23,7 +24,7 @@ function getHistory() {
 for (let i = 0; i < cityHistory.length; i++) {
     
     var rowEl = $('<row>');
-		var btnEl = $('<button>').text(`${cityHistory[i]}`)
+	var btnEl = $('<button>').text(`${cityHistory[i]}`)
 
         rowEl.addClass('row histBtnRow');
 		btnEl.addClass('btn histBtn');
@@ -39,20 +40,21 @@ for (let i = 0; i < cityHistory.length; i++) {
 		event.preventDefault();
 		city = $(this).text();
 		fiveForecastEl.empty();
-		getWeatherToday();
+		getWeatherToday(city);
 	});
 
 
 };
 
 var todayForecast = $('.containForecast')
-function getWeatherToday() {
-var currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=Minneapolis&units=imperial&appid=87c665b742be795e11aff3f1eb9bf566`;
+
+function getWeatherToday(city) {
+var currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=67c7ce236adf1f23df2005bdcd06a10f`;
 $(todayForecast).empty();
 
 $.ajax({
 	url: currentUrl,
-	method: 'GET',}).then(function (response) {$('.cardTodayMinneapolis').text(response.name);
+	method: 'GET',}).then(function (response) {$('.cardTodayCityName').text(response.name);
 	$('.cardTodayDate').text(date);
 	$('.icons').attr('src', `https://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png`);
 	var elTempfeel = $('<p>').text(`Temperature: ${response.main.temp} °F`);
@@ -65,17 +67,18 @@ $.ajax({
 	todayForecast.append(elWind);
 	
 })
-getFiveday()
-};
 
-var fiveForecastEl = $('.containFiveforecast');
-function getFivedayForecast() {
-	var fiveUrl = `https://api.openweathermap.org/data/2.5/weather?q=Minneapolis&units=imperial&appid=87c665b742be795e11aff3f1eb9bf566`;
+};
+var fiveForecastEl = $('.Fiveforecast');
+
+function getFiveday(city) {
+	var weathArray = [];
+	var fiveUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=67c7ce236adf1f23df2005bdcd06a10f`;
 $.ajax({
 	url: fiveUrl,
 	method: 'GET', }).then(function (response) {
 		var fiveDayarray = response.list;
-		var weathArray =[];
+		
 		$.each(fiveDayarray, function (index, value) {
 			weathObj = {
 				date: value.dt_txt.split(' ')[0],
@@ -85,13 +88,13 @@ $.ajax({
 				icon: value.weather[0].icon,
 				humidity: value.main.humidity
 			}
-
+			weathArray.push(weathObj);
 			if (value.dt_txt.split(' ')[1] === "12:00:00") {
-				weathArray.push(testObj);
+				
 			}
 		})
-
-	for (let i = 0; i < weathArray.length; i++) {
+console.log(weathArray);
+	for (let i = 0; i < 5; i++) {
 		var elCard = $('<div>');
 		elCard.attr('class','card');
 		elCard.attr('style','max-width: 300px;');
@@ -108,9 +111,10 @@ $.ajax({
 		elCard.append(elBody);
 
 		var elIcon = $('<img>');
-		elBody.attr('class','icons');
+		elIcon.attr('class','icons');
 		elIcon.attr('src', `https://openweathermap.org/img/wn/${weathArray[i].icon}@2x.png`);
-		elCard.append(elIcon);
+		elBody.append(elIcon);
+
 
 			
 	var elTempfeel = $('<p>').text(`Temperature: ${weathArray[i].temp} °F`);
@@ -121,15 +125,16 @@ $.ajax({
 	elBody.append(elHumid);
 	}
 });
-};
 
+
+	
+};
 function loadAll() {
 	var cityData = JSON.parse(localStorage.getItem('city'));
-	if(cityData!= null){cityHistory = cityData}
+	if(cityData !== null) {cityHistory = cityData}
 	getHistory();
 	getWeatherToday();
+
+
 };
 loadAll();
-
-
-
