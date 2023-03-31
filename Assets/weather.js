@@ -15,7 +15,7 @@ $('.search').on("click", function (event) {
 	fiveForecastEl.empty();
 	getHistory();
 	getWeatherToday(city);
-	getFiveday(city);
+	// getFiveday(city);
 });
 
 var contHistEl = $('.cityHist');
